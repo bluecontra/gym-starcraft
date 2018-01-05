@@ -2,6 +2,7 @@ import argparse
 
 import gym_starcraft.my_envs.simple_mas_env as sc
 import gym_starcraft.utils as utils
+import gym_starcraft.configures as conf
 
 
 class AttackClosestAgent(object):
@@ -18,11 +19,11 @@ class AttackClosestAgent(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ip', help='server ip', default="172.26.27.165")
-    parser.add_argument('--port', help='server port', default="11111")
+    parser.add_argument('--ip', help='server ip', default=conf.ip)
+    parser.add_argument('--port', help='server port', default=conf.port)
     args = parser.parse_args()
 
-    env = sc.SimpleMasEnv(args.ip, args.port, frame_skip=6, speed=30)
+    env = sc.SimpleMasEnv(args.ip, args.port, frame_skip=6, speed=10)
     env.seed(123)
     agent = AttackClosestAgent(env.action_space)
 

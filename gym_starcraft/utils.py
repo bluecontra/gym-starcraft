@@ -26,17 +26,27 @@ def get_observation(obs_shape, myself, enemy):
 	obs = np.zeros(obs_shape)
 
 	if myself is not None or enemy is None:
-		obs[0] = 0.0
+		obs[0] = enemy.id
 		obs[1] = enemy.health
 		obs[2] = enemy.groundCD
-		obs[3] = enemy.groundRange # / DISTANCE_FACTOR - 1
-		obs[4] = get_degree(myself.x, -myself.y, enemy.x, -enemy.y) / 180
-		obs[5] = get_distance(myself.x, -myself.y, enemy.x, -enemy.y) # / DISTANCE_FACTOR - 1
-		obs[6] = 0.0
-	else:
-		obs[6] = 1.0
+		# obs[3] = enemy.groundRange # / DISTANCE_FACTOR - 1
+		obs[3] = get_degree(myself.x, -myself.y, enemy.x, -enemy.y)  / 180
+		obs[4] = get_distance(myself.x, -myself.y, enemy.x, -enemy.y)  / DISTANCE_FACTOR - 1
 
 	return obs
+
+def get_ally_enemy_num(my_obs):
+    ally_num = 0
+    enemy_num = 0
+
+    for uid, us in my_obs.items():
+        if us[5] > 0.5:
+            enemy_num += 1
+        else:
+            ally_num += 1
+
+    # print ally_num, enemy_num
+    return ally_num, enemy_num
 
 def get_weakest_G(units_table):
     min_total_hp = 1E30
@@ -56,7 +66,7 @@ def get_weakest(units_dict):
     for uid, item in units_dict.items():
         # print uid
         # print item
-        if item[0] < 1:
+        if item[5] < 1:
             continue
         tmp_hp = item[1]
         if tmp_hp < min_total_hp:

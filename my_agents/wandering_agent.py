@@ -23,7 +23,7 @@ class WanderingAgent(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ip', help='server ip', default="172.26.27.165")
+    parser.add_argument('--ip', help='server ip', default=conf.IP)
     parser.add_argument('--port', help='server port', default="11111")
     args = parser.parse_args()
 
