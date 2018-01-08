@@ -78,9 +78,9 @@ def get_closest(units_dict):
     min_distance = 1E30
     closest_uid = -1
     for uid, item in units_dict.items():
-        if item[0] < 1:
+        if item[5] < 1:
             continue
-        tmp_dis = item[5]
+        tmp_dis = item[4]
         if tmp_dis < min_distance:
             min_distance = tmp_dis
             closest_uid = uid

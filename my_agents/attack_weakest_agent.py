@@ -11,7 +11,7 @@ class AttackWeakestAgent(object):
 
     def act(self, obs):
         action = self.action_space.sample()
-        # keep it wandering
+        
         action[0] = 1
         t = utils.get_weakest(obs)
         if t != -1:
@@ -27,7 +27,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # env = sc.SimpleMasEnv(args.ip, args.port, frame_skip=6, speed=30)
-    env = sc.MasterSlaveEnv(args.ip, args.port, frame_skip=9, speed=90)
+    env = sc.MasterSlaveEnv(args.ip, args.port, frame_skip=9, speed=10)
     env.seed(123)
     agent = AttackWeakestAgent(env.action_space)
 
@@ -47,12 +47,8 @@ if __name__ == '__main__':
             # print actions
             obs, reward, done, info = env.step(actions)
             
-            print reward
-            # for uid, unit_obs in obs.items():
-            #     print uid, ":"
-            #     for u, o in unit_obs.items():
-            #         print "--", o
-            print "EP"
+            # print reward
+            # print "EP"
         episodes += 1
 
     env.close()

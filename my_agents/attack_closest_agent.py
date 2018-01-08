@@ -1,6 +1,6 @@
 import argparse
 
-import gym_starcraft.my_envs.simple_mas_env as sc
+import gym_starcraft.my_envs.Master_Slave_env as sc
 import gym_starcraft.utils as utils
 import gym_starcraft.configures as conf
 
@@ -11,9 +11,13 @@ class AttackClosestAgent(object):
 
     def act(self, obs):
         action = self.action_space.sample()
-        # keep it wandering
+        
         action[0] = 1
-        action[1] = utils.get_closest(obs)
+        t = utils.get_closest(obs)
+        if t != -1:
+            action[1] = obs[t][3]
+            action[2] = obs[t][4]
+
         return action
 
 
@@ -23,13 +27,15 @@ if __name__ == '__main__':
     parser.add_argument('--port', help='server port', default=conf.port)
     args = parser.parse_args()
 
-    env = sc.SimpleMasEnv(args.ip, args.port, frame_skip=6, speed=10)
+    # env = sc.SimpleMasEnv(args.ip, args.port, frame_skip=6, speed=30)
+    env = sc.MasterSlaveEnv(args.ip, args.port, frame_skip=9, speed=10)
     env.seed(123)
     agent = AttackClosestAgent(env.action_space)
 
     episodes = 0
     while episodes < 50:
         obs = env.reset()
+        # print env.state['map_name']
         done = False
         while not done:
             # each agent pick the action at the same time
@@ -41,6 +47,13 @@ if __name__ == '__main__':
                 actions[uid] = action
             # print actions
             obs, reward, done, info = env.step(actions)
+            
+            # print reward
+            # for uid, unit_obs in obs.items():
+            #     print uid, ":"
+            #     for u, o in unit_obs.items():
+            #         print "--", o
+            # print "EP"
         episodes += 1
 
     env.close()
