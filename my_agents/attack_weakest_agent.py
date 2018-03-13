@@ -14,9 +14,11 @@ class AttackWeakestAgent(object):
         
         action[0] = 1
         t = utils.get_weakest(obs)
+        # print t
         if t != -1:
             action[1] = obs[t][3]
             action[2] = obs[t][4]
+        # print action
         return action
 
 
@@ -47,6 +49,7 @@ if __name__ == '__main__':
             # print actions
             obs, reward, done, info = env.step(actions)
             
+            # print obs
             # print reward
             # print "EP"
         episodes += 1

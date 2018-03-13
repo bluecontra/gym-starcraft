@@ -30,6 +30,7 @@ class MasterSlaveEnv(sc.StarCraftEnv):
 
     def _make_commands(self, actions):
         cmds = []
+        # return cmds
         if self.state is None or actions is None:
             return cmds
 
@@ -46,6 +47,7 @@ class MasterSlaveEnv(sc.StarCraftEnv):
                 distance = (action[2] + 1) * DISTANCE_FACTOR
                 x2, y2 = utils.get_position(degree, distance, myself_x, -myself_y)
                 target = self._get_id_by_position(x2, -y2)
+                # print target
 
                 if target != -1:
                     cmds.append(proto.concat_cmd(
@@ -79,25 +81,25 @@ class MasterSlaveEnv(sc.StarCraftEnv):
 
     def _compute_reward(self):
         reward_dict = {}
-        terminal_reward = 0
+        # terminal_reward = 0
 
-        # terminal reward settings
-        if self._check_done() and not bool(self.state['battle_won']):
-            terminal_reward = -0.2
-        if self._check_done() and bool(self.state['battle_won']):
-            terminal_reward = 1
-            self.episode_wins += 1
-        if self.episode_steps == self.max_episode_steps:
-            terminal_reward = -0.2
+        # # terminal reward settings
+        # if self._check_done() and not bool(self.state['battle_won']):
+        #     terminal_reward = -0.2
+        # if self._check_done() and bool(self.state['battle_won']):
+        #     terminal_reward = 1
+        #     self.episode_wins += 1
+        # if self.episode_steps == self.max_episode_steps:
+        #     terminal_reward = -0.2
 
-        # independent reward for each single agent
-        for uid, ut in self.state['units_myself'].iteritems():
-            my_reward = 0
-            ally_num_pre, enemy_num_pre = utils.get_ally_enemy_num(self.obs_pre[uid])
-            ally_num, enemy_num = utils.get_ally_enemy_num(self.obs[uid])
-            my_reward = (ally_num - ally_num_pre) - (enemy_num - enemy_num_pre)
+        # # independent reward for each single agent
+        # for uid, ut in self.state['units_myself'].iteritems():
+        #     my_reward = 0
+        #     ally_num_pre, enemy_num_pre = utils.get_ally_enemy_num(self.obs_pre[uid])
+        #     ally_num, enemy_num = utils.get_ally_enemy_num(self.obs[uid])
+        #     my_reward = (ally_num - ally_num_pre) - (enemy_num - enemy_num_pre)
 
-            reward_dict[uid] = my_reward + terminal_reward
+        #     reward_dict[uid] = my_reward + terminal_reward
 
         return reward_dict
 
@@ -131,7 +133,7 @@ class MasterSlaveEnv(sc.StarCraftEnv):
 
     def _get_id_by_position(self, x, y):
         tid = -1
-        bias_range = 1
+        bias_range = 5
 
 
         for uid, ut in self.state['units_enemy'].iteritems():
