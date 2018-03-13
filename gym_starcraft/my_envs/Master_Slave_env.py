@@ -2,9 +2,9 @@ import numpy as np
 
 from gym import spaces
 from torchcraft_py import proto
-import gym_starcraft.utils as utils
+import gym_starcraft.utils2 as utils
 
-import gym_starcraft.envs.starcraft_env as sc
+import gym_starcraft.envs.starcraft_env_t as sc
 
 DISTANCE_FACTOR = 16
 

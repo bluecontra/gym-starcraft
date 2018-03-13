@@ -2,7 +2,7 @@ import gym
 
 import torchcraft_py.torchcraft as tc
 import torchcraft_py.proto as proto
-import gym_starcraft.utils as utils
+import gym_starcraft.utils2 as utils
 
 
 class StarCraftEnv(gym.Env):

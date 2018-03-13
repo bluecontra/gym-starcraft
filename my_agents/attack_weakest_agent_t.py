@@ -1,7 +1,7 @@
 import argparse
 
 import gym_starcraft.my_envs.Master_Slave_env as sc
-import gym_starcraft.utils as utils
+import gym_starcraft.utils2 as utils
 import gym_starcraft.configures as conf
 
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # env = sc.SimpleMasEnv(args.ip, args.port, frame_skip=6, speed=30)
-    env = sc.MasterSlaveEnv(args.ip, args.port, frame_skip=9, speed=10)
+    env = sc.MasterSlaveEnv(args.ip, args.port, frame_skip=6, speed=10)
     env.seed(123)
     agent = AttackWeakestAgent(env.action_space)
 
