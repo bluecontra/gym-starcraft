@@ -1,10 +1,12 @@
 import math
 import numpy as np
 
-DISTANCE_FACTOR = 16.0
+DISTANCE_FACTOR = 64.0
+
 
 def get_degree(x1, y1, x2, y2):
-    radians = math.atan2(y2 - y1, x2 - x1)
+    # (-pi, pi)
+    radians = math.atan2(y2 - y1, x2 - x1) 
     return math.degrees(radians)
 
 
@@ -27,13 +29,17 @@ def get_observation(obs_shape, myself, enemy):
 
 	if myself is not None or enemy is None:
 		obs[0] = enemy.id
-		obs[1] = enemy.health
-		obs[2] = enemy.groundCD
+		obs[1] = enemy.health / enemy.max_health
+		obs[2] = enemy.groundCD / enemy.maxCD     # 15 frames
 		# obs[3] = enemy.groundRange # / DISTANCE_FACTOR - 1
-		obs[3] = get_degree(myself.x, -myself.y, enemy.x, -enemy.y)  / 180
-		obs[4] = get_distance(myself.x, -myself.y, enemy.x, -enemy.y)  / DISTANCE_FACTOR - 1
+		obs[3] = get_degree(myself.x, -myself.y, enemy.x, -enemy.y)  / 180   # (-180, 180) --> (-1, 1)
+		obs[4] = get_distance(myself.x, -myself.y, enemy.x, -enemy.y)  / DISTANCE_FACTOR    # pixel_x/x = 8
         # obs[4] = (myself.x - enemy.x) / DISTANCE_FACTOR
         # print obs[4]
+        # print "-"
+        # print myself.x
+        # print myself.y
+        # print enemy.pixel_x
 	return obs
 
 def get_ally_enemy_num(my_obs):

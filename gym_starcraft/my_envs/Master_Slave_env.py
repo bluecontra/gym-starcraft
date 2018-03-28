@@ -6,7 +6,7 @@ import gym_starcraft.utils2 as utils
 
 import gym_starcraft.envs.starcraft_env_t as sc
 
-DISTANCE_FACTOR = 16
+DISTANCE_FACTOR = 64.0
 
 class MasterSlaveEnv(sc.StarCraftEnv):
     def __init__(self, server_ip, server_port, speed=10, frame_skip=0,
@@ -43,8 +43,9 @@ class MasterSlaveEnv(sc.StarCraftEnv):
                 # target = self._get_id_by_position(action[1], action[2])
                 myself_x = self.state['units_myself'][uid].x
                 myself_y = self.state['units_myself'][uid].y
-                degree = action[1] * 180
-                distance = (action[2] + 1) * DISTANCE_FACTOR
+                # (-1, 1) --> (-180, 180)
+                degree = action[1] * 180  
+                distance = (action[2]) * DISTANCE_FACTOR
                 x2, y2 = utils.get_position(degree, distance, myself_x, -myself_y)
                 target = self._get_id_by_position(x2, -y2)
                 # print target
@@ -53,6 +54,11 @@ class MasterSlaveEnv(sc.StarCraftEnv):
                     cmds.append(proto.concat_cmd(
                         proto.commands['command_unit_protected'], uid,
                         proto.unit_command_types['Attack_Unit'], target))
+                # if no valid target, then STOP (NOT no-op)
+                else:
+                    cmds.append(proto.concat_cmd(
+                        proto.commands['command_unit_protected'], uid,
+                        proto.unit_command_types['Stop']))
             else:
                 # Move action
                 if self.state['units_myself'][uid] is None:
@@ -107,7 +113,9 @@ class MasterSlaveEnv(sc.StarCraftEnv):
     def _make_observation_for_agent(self, uid, unit):
         obs = {}
         myself = unit
-        # my_view = unit.groundRange
+        # my_view = unit.groundRange # unit.groudRange = 16
+        # print "view"
+        # print unit.groundRange
         my_view = 1E30
 
         # get the observation of myself
@@ -145,3 +153,4 @@ class MasterSlaveEnv(sc.StarCraftEnv):
                 tid = uid
 
         return tid
+        # return -1

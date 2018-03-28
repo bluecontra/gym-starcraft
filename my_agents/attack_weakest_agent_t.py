@@ -22,6 +22,19 @@ class AttackWeakestAgent(object):
         return action
 
 
+one_hot_dic = {
+    0: [1,0,0,0,0,0,0,0,0,0],
+    1: [0,1,0,0,0,0,0,0,0,0],
+    2: [0,0,1,0,0,0,0,0,0,0],
+    3: [0,0,0,1,0,0,0,0,0,0],
+    4: [0,0,0,0,1,0,0,0,0,0],
+    5: [0,0,0,0,0,1,0,0,0,0],
+    6: [0,0,0,0,0,0,1,0,0,0],
+    7: [0,0,0,0,0,0,0,1,0,0],
+    8: [0,0,0,0,0,0,0,0,1,0],
+    9: [0,0,0,0,0,0,0,0,0,1],
+}
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--ip', help='server ip', default=conf.ip)
@@ -29,29 +42,54 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # env = sc.SimpleMasEnv(args.ip, args.port, frame_skip=6, speed=30)
-    env = sc.MasterSlaveEnv(args.ip, args.port, frame_skip=6, speed=10)
+    env = sc.MasterSlaveEnv(args.ip, args.port, frame_skip=6, speed=30)
     env.seed(123)
     agent = AttackWeakestAgent(env.action_space)
 
     episodes = 0
+
+    id_dic = {}
+    ind = 0
+
     while episodes < 50:
         obs = env.reset()
+        ind = 0
+        for uid, ut in env.state['units_myself'].iteritems():
+            id_dic[ind] = uid
+            ind += 1
+        # print "-"
+        for uid, ut in env.state['units_enemy'].iteritems():
+            id_dic[ind] = uid
+            ind += 1
+        print id_dic
         # print env.state['map_name']
         done = False
         while not done:
+            
+            
             # each agent pick the action at the same time
             actions = {}
             for uid, ut in env.state['units_myself'].iteritems():
+                # print uid
                 # action = agent.act(env.state['units_enemy'])
                 my_obs = obs[uid]
                 action = agent.act(my_obs)
                 actions[uid] = action
             # print actions
+
             obs, reward, done, info = env.step(actions)
             
+            # TO-DO
+            # store transition
+
+
             # print obs
             # print reward
             # print "EP"
+
+        # TO-DO
+        # Train
+
         episodes += 1
 
     env.close()
